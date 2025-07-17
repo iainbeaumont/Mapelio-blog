@@ -1,0 +1,102 @@
+openapi: 3.1.0
+info:
+  title: Shopify Admin API - Read Products
+  description: Read-only access to Shopify product details, including title, description, and other metadata.
+  version: 2023-10
+servers:
+  - url: https://carteo-maps.myshopify.com/admin/api/2023-10
+    variables:
+      storeName:
+        default: your-store-name
+        description: Your Shopify store's subdomain, e.g., mystore
+paths:
+  /products.json:
+    get:
+      operationId: getAllProducts
+      summary: Retrieve all products with basic details
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 250
+        - name: fields
+          in: query
+          required: false
+          description: Comma-separated list of fields to retrieve (e.g., id,title,body_html)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of products
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  products:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        title:
+                          type: string
+                        body_html:
+                          type: string
+                        vendor:
+                          type: string
+                        product_type:
+                          type: string
+
+  /products/{product_id}.json:
+    get:
+      operationId: getProductById
+      summary: Retrieve a single product by ID with full details
+      parameters:
+        - name: product_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Single product details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  product:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      title:
+                        type: string
+                      body_html:
+                        type: string
+                      vendor:
+                        type: string
+                      product_type:
+                        type: string
+                      created_at:
+                        type: string
+                        format: date-time
+                      updated_at:
+                        type: string
+                        format: date-time
+                      handle:
+                        type: string
+                      status:
+                        type: string
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+security:
+  - bearerAuth: [YOUR_SHOPIFY_ACCESS_TOKEN]
